@@ -20,6 +20,8 @@ github.com/cloudfoundry/jvm-application-buildpack v0.0.0-20181113230707-984588e7
 github.com/cloudfoundry/jvm-application-buildpack v0.0.0-20181113230707-984588e73b12/go.mod h1:drHJcLPBuJxtYS4XCpCA+5DmnHkDBPKoWHdC9pANXdQ=
 github.com/cloudfoundry/jvm-application-buildpack v0.0.0-20181113235746-750da67ff1e5 h1:Y4uTH5dlJAVp2MclLzCyXQPwQmq32xYdMWt71yHg0BM=
 github.com/cloudfoundry/jvm-application-buildpack v0.0.0-20181113235746-750da67ff1e5/go.mod h1:A+WxfYFGDRoLS0HQEhio4y5j9kCOWzTtAVGOQBxBfiw=
+github.com/cloudfoundry/jvm-application-buildpack v0.0.0-20181114220057-678bc17e061d h1:BWA8onTAE/VkPOZJdCUm5KRW9gDHIxaZm77XAI48izs=
+github.com/cloudfoundry/jvm-application-buildpack v0.0.0-20181114220057-678bc17e061d/go.mod h1:A+WxfYFGDRoLS0HQEhio4y5j9kCOWzTtAVGOQBxBfiw=
 github.com/cloudfoundry/libjavabuildpack v1.12.0 h1:LJv3ggZSEnI2c9UfZ0c/nJwhynNLpwsT8Y6Qlfgc4oQ=
 github.com/cloudfoundry/libjavabuildpack v1.12.0/go.mod h1:JsZwEJFbdR0Q7Ps6UkMv7aOA1uFNg130wwP2jPZbGtU=
 github.com/cloudfoundry/libjavabuildpack v1.12.1-0.20181113224929-aaa31d4df068 h1:M2P7yNq73wRfWtEu2NQ/ru/LuvOmFE+wA4bj52TgLMU=
