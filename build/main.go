@@ -28,7 +28,7 @@ import (
 func main() {
 	build, err := buildPkg.DefaultBuild()
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Failed to initialize Build: %s\n", err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "Failed to initialize Build: %s\n", err)
 		os.Exit(101)
 	}
 
