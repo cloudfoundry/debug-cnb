@@ -27,13 +27,13 @@ import (
 // Dependency indicates that a JVM application should be run with debugging enabled.
 const Dependency = "debug"
 
-// Debug represents the debug configuration for a JVM application
+// Debug represents the debug configuration for a JVM application.
 type Debug struct {
 	layer  layers.Layer
 	logger logger.Logger
 }
 
-// Contribute makes the contribution to launch
+// Contribute makes the contribution to launch.
 func (d Debug) Contribute() error {
 	return d.layer.Contribute(marker{true}, func(layer layers.Layer) error {
 		return layer.WriteProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
