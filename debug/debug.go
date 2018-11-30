@@ -49,7 +49,7 @@ fi
 
 export JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,address=${PORT},suspend=${SUSPEND}"
 `)
-	}, layers.Launch)
+	}, layers.Cache, layers.Launch)
 }
 
 // String makes Debug satisfy the Stringer interface.
