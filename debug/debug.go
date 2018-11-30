@@ -35,11 +35,7 @@ type Debug struct {
 
 // Contribute makes the contribution to launch
 func (d Debug) Contribute() error {
-	marker := struct {
-		Debug bool `toml:"debug"`
-	}{true}
-
-	return d.layer.Contribute(marker, func(layer layers.Layer) error {
+	return d.layer.Contribute(marker{true}, func(layer layers.Layer) error {
 		return layer.WriteProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
@@ -69,4 +65,12 @@ func NewDebug(build build.Build) (Debug, bool) {
 	}
 
 	return Debug{build.Layers.Layer(Dependency), build.Logger}, true
+}
+
+type marker struct {
+	Debug bool `toml:"debug"`
+}
+
+func (m marker) Identity() (string, string) {
+	return "Debug", ""
 }

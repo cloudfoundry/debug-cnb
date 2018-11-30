@@ -41,7 +41,7 @@ func main() {
 }
 
 func b(build buildPkg.Build) (int, error) {
-	build.Logger.FirstLine(build.Logger.PrettyVersion(build.Buildpack))
+	build.Logger.FirstLine(build.Logger.PrettyIdentity(build.Buildpack))
 
 	if d, ok := debug.NewDebug(build); ok {
 		if err := d.Contribute(); err != nil {
