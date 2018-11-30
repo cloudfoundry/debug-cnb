@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package debug_buildpack_test
+package debug_test
 
 import (
 	"path/filepath"
-	"strings"
 	"testing"
 
-	"github.com/buildpack/libbuildpack"
-	"github.com/cloudfoundry/debug-buildpack"
-	"github.com/cloudfoundry/libjavabuildpack"
-	"github.com/cloudfoundry/libjavabuildpack/test"
+	"github.com/buildpack/libbuildpack/buildplan"
+	"github.com/cloudfoundry/debug-buildpack/debug"
+	"github.com/cloudfoundry/libcfbuildpack/test"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
@@ -37,9 +35,9 @@ func testDebug(t *testing.T, when spec.G, it spec.S) {
 
 	it("returns true if build plan does exist", func() {
 		f := test.NewBuildFactory(t)
-		f.AddBuildPlan(t, debug_buildpack.DebugDependency, libbuildpack.BuildPlanDependency{})
+		f.AddBuildPlan(t, debug.Dependency, buildplan.Dependency{})
 
-		_, ok := debug_buildpack.NewDebug(f.Build)
+		_, ok := debug.NewDebug(f.Build)
 		if !ok {
 			t.Errorf("NewDebug = %t, expected true", ok)
 		}
@@ -48,7 +46,7 @@ func testDebug(t *testing.T, when spec.G, it spec.S) {
 	it("returns false if build plan does not exist", func() {
 		f := test.NewBuildFactory(t)
 
-		_, ok := debug_buildpack.NewDebug(f.Build)
+		_, ok := debug.NewDebug(f.Build)
 		if ok {
 			t.Errorf("NewDebug = %t, expected false", ok)
 		}
@@ -56,15 +54,16 @@ func testDebug(t *testing.T, when spec.G, it spec.S) {
 
 	it("contributes debug configuration", func() {
 		f := test.NewBuildFactory(t)
-		f.AddBuildPlan(t, debug_buildpack.DebugDependency, libbuildpack.BuildPlanDependency{})
+		f.AddBuildPlan(t, debug.Dependency, buildplan.Dependency{})
 
-		d, _ := debug_buildpack.NewDebug(f.Build)
+		d, _ := debug.NewDebug(f.Build)
 		if err := d.Contribute(); err != nil {
 			t.Fatal(err)
 		}
 
-		layerRoot := filepath.Join(f.Build.Launch.Root, "debug")
-		test.BeFileLike(t, filepath.Join(layerRoot, "profile.d", "debug"), 0644,
+		layer := f.Build.Layers.Layer("debug")
+		test.BeLayerLike(t, layer, false, false, true)
+		test.BeFileLike(t, filepath.Join(layer.Root, "profile.d", "debug"), 0644,
 			`PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
@@ -79,24 +78,4 @@ fi
 export JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,address=${PORT},suspend=${SUSPEND}"
 `)
 	})
-
-	it("reuses debug configuration", func() {
-		f := test.NewBuildFactory(t)
-		f.AddBuildPlan(t, debug_buildpack.DebugDependency, libbuildpack.BuildPlanDependency{})
-
-		libjavabuildpack.WriteToFile(strings.NewReader("debug = true"), filepath.Join(f.Build.Launch.Root, "debug.toml"), 0644)
-
-		d, _ := debug_buildpack.NewDebug(f.Build)
-		if err := d.Contribute(); err != nil {
-			t.Fatal(err)
-		}
-
-
-		if exist, err := libjavabuildpack.FileExists(filepath.Join(f.Build.Launch.Root, "debug", "profile.d", "debug")) ; err != nil {
-			t.Fatal(err)
-		} else if exist {
-			t.Errorf("Contribute created profile.d/debug, expected not to")
-		}
-	})
-
 }

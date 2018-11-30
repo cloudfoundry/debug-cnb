@@ -20,27 +20,34 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/buildpack/libbuildpack"
-	"github.com/cloudfoundry/debug-buildpack"
-	"github.com/cloudfoundry/libjavabuildpack"
+	"github.com/buildpack/libbuildpack/buildplan"
+	"github.com/cloudfoundry/debug-buildpack/debug"
+	buildPkg "github.com/cloudfoundry/libcfbuildpack/build"
 )
 
 func main() {
-	build, err := libjavabuildpack.DefaultBuild()
+	build, err := buildPkg.DefaultBuild()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to initialize Build: %s\n", err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "Failed to initialize Build: %s\n", err.Error())
 		os.Exit(101)
 	}
 
+	if code, err := b(build); err != nil {
+		build.Logger.Info(err.Error())
+		os.Exit(code)
+	} else {
+		os.Exit(code)
+	}
+}
+
+func b(build buildPkg.Build) (int, error) {
 	build.Logger.FirstLine(build.Logger.PrettyVersion(build.Buildpack))
 
-	if d, ok := debug_buildpack.NewDebug(build); ok {
-		if err = d.Contribute(); err != nil {
-			build.Logger.Info(err.Error())
-			build.Failure(103)
-			return
+	if d, ok := debug.NewDebug(build); ok {
+		if err := d.Contribute(); err != nil {
+			return build.Failure(103), err
 		}
 	}
 
-	build.Success(libbuildpack.BuildPlan{})
+	return build.Success(buildplan.BuildPlan{})
 }
