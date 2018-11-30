@@ -20,30 +20,35 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/buildpack/libbuildpack"
-	"github.com/cloudfoundry/debug-buildpack"
-	"github.com/cloudfoundry/jvm-application-buildpack"
-	"github.com/cloudfoundry/libjavabuildpack"
+	"github.com/buildpack/libbuildpack/buildplan"
+	"github.com/cloudfoundry/debug-buildpack/debug"
+	"github.com/cloudfoundry/jvm-application-buildpack/jvmapplication"
+	detectPkg "github.com/cloudfoundry/libcfbuildpack/detect"
 )
 
 func main() {
-	detect, err := libjavabuildpack.DefaultDetect()
+	detect, err := detectPkg.DefaultDetect()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to initialize Detect: %s\n", err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "Failed to initialize Detect: %s\n", err.Error())
 		os.Exit(101)
 	}
 
-	_, j := detect.BuildPlan[jvm_application_buildpack.JVMApplicationDependency]
+	if code, err := d(detect); err != nil {
+		detect.Logger.Info(err.Error())
+		os.Exit(code)
+	} else {
+		os.Exit(code)
+	}
+}
+
+func d(detect detectPkg.Detect) (int, error) {
+	_, j := detect.BuildPlan[jvmapplication.Dependency]
 
 	d := detect.Platform.Envs.Contains("BP_DEBUG")
 
 	if j && d {
-		detect.Pass(libbuildpack.BuildPlan{
-			debug_buildpack.DebugDependency: libbuildpack.BuildPlanDependency{},
-		})
-		return
+		return detect.Pass(buildplan.BuildPlan{debug.Dependency: buildplan.Dependency{}})
 	}
 
-	detect.Fail()
-	return
+	return detect.Fail(), nil
 }

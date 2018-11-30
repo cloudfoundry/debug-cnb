@@ -17,14 +17,12 @@
 package main
 
 import (
-	"fmt"
-	"path/filepath"
-	"strings"
 	"testing"
 
-	"github.com/cloudfoundry/jvm-application-buildpack"
-	"github.com/cloudfoundry/libjavabuildpack"
-	"github.com/cloudfoundry/libjavabuildpack/test"
+	"github.com/buildpack/libbuildpack/buildplan"
+	"github.com/cloudfoundry/jvm-application-buildpack/jvmapplication"
+	"github.com/cloudfoundry/libcfbuildpack/detect"
+	"github.com/cloudfoundry/libcfbuildpack/test"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
@@ -36,49 +34,45 @@ func TestDetect(t *testing.T) {
 func testDetect(t *testing.T, when spec.G, it spec.S) {
 
 	it("fails without jvm-application", func() {
-		f := test.NewEnvironmentFactory(t)
-		defer f.Restore()
+		f := test.NewDetectFactory(t)
+		f.AddEnv(t, "BP_DEBUG", "")
 
-		if err := libjavabuildpack.WriteToFile(strings.NewReader(""), filepath.Join(f.Platform, "env", "BP_DEBUG"), 0644); err != nil {
+		exitStatus, err := d(f.Detect)
+		if err != nil {
 			t.Fatal(err)
 		}
 
-		f.Console.In(t, "")
-
-		main()
-
-		if *f.ExitStatus != 100 {
-			t.Errorf("os.Exit = %d, expected 100", *f.ExitStatus)
+		if exitStatus != detect.FailStatusCode {
+			t.Errorf("os.Exit = %d, expected 100", exitStatus)
 		}
 	})
 
 	it("fails without BP_DEBUG", func() {
-		f := test.NewEnvironmentFactory(t)
-		defer f.Restore()
+		f := test.NewDetectFactory(t)
+		f.AddBuildPlan(t, jvmapplication.Dependency, buildplan.Dependency{})
 
-		f.Console.In(t, fmt.Sprintf("[%s]", jvm_application_buildpack.JVMApplicationDependency))
+		exitStatus, err := d(f.Detect)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-		main()
-
-		if *f.ExitStatus != 100 {
-			t.Errorf("os.Exit = %d, expected 100", *f.ExitStatus)
+		if exitStatus != detect.FailStatusCode {
+			t.Errorf("os.Exit = %d, expected 100", exitStatus)
 		}
 	})
 
 	it("passes with jvm-application and BP_DEBUG", func() {
-		f := test.NewEnvironmentFactory(t)
-		defer f.Restore()
+		f := test.NewDetectFactory(t)
+		f.AddEnv(t, "BP_DEBUG", "")
+		f.AddBuildPlan(t, jvmapplication.Dependency, buildplan.Dependency{})
 
-		if err := libjavabuildpack.WriteToFile(strings.NewReader(""), filepath.Join(f.Platform, "env", "BP_DEBUG"), 0644); err != nil {
+		exitStatus, err := d(f.Detect)
+		if err != nil {
 			t.Fatal(err)
 		}
 
-		f.Console.In(t, fmt.Sprintf("[%s]", jvm_application_buildpack.JVMApplicationDependency))
-
-		main()
-
-		if *f.ExitStatus != 0 {
-			t.Errorf("os.Exit = %d, expected 0", *f.ExitStatus)
+		if exitStatus != detect.PassStatusCode {
+			t.Errorf("os.Exit = %d, expected 0", exitStatus)
 		}
 	})
 }
