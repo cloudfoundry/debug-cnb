@@ -20,6 +20,7 @@ import (
 	"testing"
 
 	"github.com/buildpack/libbuildpack/buildplan"
+	"github.com/cloudfoundry/debug-buildpack/debug"
 	"github.com/cloudfoundry/jvm-application-buildpack/jvmapplication"
 	"github.com/cloudfoundry/libcfbuildpack/detect"
 	"github.com/cloudfoundry/libcfbuildpack/test"
@@ -74,5 +75,9 @@ func testDetect(t *testing.T, when spec.G, it spec.S) {
 		if exitStatus != detect.PassStatusCode {
 			t.Errorf("os.Exit = %d, expected 0", exitStatus)
 		}
+
+		test.BeBuildPlanLike(t, f.Output, buildplan.BuildPlan{
+			debug.Dependency: buildplan.Dependency{},
+		})
 	})
 }

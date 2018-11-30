@@ -17,7 +17,6 @@
 package debug_test
 
 import (
-	"path/filepath"
 	"testing"
 
 	"github.com/buildpack/libbuildpack/buildplan"
@@ -63,8 +62,7 @@ func testDebug(t *testing.T, when spec.G, it spec.S) {
 
 		layer := f.Build.Layers.Layer("debug")
 		test.BeLayerLike(t, layer, false, false, true)
-		test.BeFileLike(t, filepath.Join(layer.Root, "profile.d", "debug"), 0644,
-			`PORT=${BPL_DEBUG_PORT:=8080}
+		test.BeProfileLike(t, layer, "debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
 printf "Debugging enabled on port ${PORT}"
