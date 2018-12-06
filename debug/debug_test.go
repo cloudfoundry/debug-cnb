@@ -61,7 +61,7 @@ func testDebug(t *testing.T, when spec.G, it spec.S) {
 		}
 
 		layer := f.Build.Layers.Layer("debug")
-		test.BeLayerLike(t, layer, false, true, true)
+		test.BeLayerLike(t, layer, false, false, true)
 		test.BeProfileLike(t, layer, "debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
