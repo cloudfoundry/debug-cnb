@@ -21,7 +21,6 @@ import (
 
 	"github.com/cloudfoundry/libcfbuildpack/build"
 	"github.com/cloudfoundry/libcfbuildpack/layers"
-	"github.com/cloudfoundry/libcfbuildpack/logger"
 )
 
 // Dependency indicates that a JVM application should be run with debugging enabled.
@@ -29,8 +28,7 @@ const Dependency = "debug"
 
 // Debug represents the debug configuration for a JVM application.
 type Debug struct {
-	layer  layers.Layer
-	logger logger.Logger
+	layer layers.Layer
 }
 
 // Contribute makes the contribution to launch.
@@ -54,7 +52,7 @@ export JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,addre
 
 // String makes Debug satisfy the Stringer interface.
 func (d Debug) String() string {
-	return fmt.Sprintf("Debug{ layer: %s, logger: %s }", d.layer, d.logger)
+	return fmt.Sprintf("Debug{ layer: %s }", d.layer)
 }
 
 // NewDebug creates a new Debug instance. OK is true if build plan contains "debug" dependency, otherwise false.
@@ -64,7 +62,7 @@ func NewDebug(build build.Build) (Debug, bool) {
 		return Debug{}, false
 	}
 
-	return Debug{build.Layers.Layer(Dependency), build.Logger}, true
+	return Debug{build.Layers.Layer(Dependency)}, true
 }
 
 type marker struct {
