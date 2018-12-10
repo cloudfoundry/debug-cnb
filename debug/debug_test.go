@@ -22,47 +22,46 @@ import (
 	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/cloudfoundry/debug-buildpack/debug"
 	"github.com/cloudfoundry/libcfbuildpack/test"
+	. "github.com/onsi/gomega"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
 
 func TestDebug(t *testing.T) {
-	spec.Run(t, "Debug", testDebug, spec.Report(report.Terminal{}))
-}
+	spec.Run(t, "Debug", func(t *testing.T, _ spec.G, it spec.S) {
 
-func testDebug(t *testing.T, when spec.G, it spec.S) {
+		g := NewGomegaWithT(t)
 
-	it("returns true if build plan does exist", func() {
-		f := test.NewBuildFactory(t)
-		f.AddBuildPlan(t, debug.Dependency, buildplan.Dependency{})
+		var f *test.BuildFactory
 
-		_, ok := debug.NewDebug(f.Build)
-		if !ok {
-			t.Errorf("NewDebug = %t, expected true", ok)
-		}
-	})
+		it.Before(func() {
+			f = test.NewBuildFactory(t)
+		})
 
-	it("returns false if build plan does not exist", func() {
-		f := test.NewBuildFactory(t)
+		it("returns true if build plan does exist", func() {
+			f.AddBuildPlan(debug.Dependency, buildplan.Dependency{})
 
-		_, ok := debug.NewDebug(f.Build)
-		if ok {
-			t.Errorf("NewDebug = %t, expected false", ok)
-		}
-	})
+			_, ok := debug.NewDebug(f.Build)
+			g.Expect(ok).To(BeTrue())
+		})
 
-	it("contributes debug configuration", func() {
-		f := test.NewBuildFactory(t)
-		f.AddBuildPlan(t, debug.Dependency, buildplan.Dependency{})
+		it("returns false if build plan does not exist", func() {
+			_, ok := debug.NewDebug(f.Build)
+			g.Expect(ok).To(BeFalse())
+		})
 
-		d, _ := debug.NewDebug(f.Build)
-		if err := d.Contribute(); err != nil {
-			t.Fatal(err)
-		}
+		it("contributes debug configuration", func() {
+			f.AddBuildPlan(debug.Dependency, buildplan.Dependency{})
 
-		layer := f.Build.Layers.Layer("debug")
-		test.BeLayerLike(t, layer, false, false, true)
-		test.BeProfileLike(t, layer, "debug", `PORT=${BPL_DEBUG_PORT:=8080}
+			d, _ := debug.NewDebug(f.Build)
+			g.Expect(d.Contribute()).To(Succeed())
+			if err := d.Contribute(); err != nil {
+				t.Fatal(err)
+			}
+
+			layer := f.Build.Layers.Layer("debug")
+			g.Expect(layer).To(test.HaveLayerMetadata(false, false, true))
+			g.Expect(layer).To(test.HaveProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
 printf "Debugging enabled on port ${PORT}"
@@ -74,6 +73,7 @@ else
 fi
 
 export JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,address=${PORT},suspend=${SUSPEND}"
-`)
-	})
+`))
+		})
+	}, spec.Report(report.Terminal{}))
 }
