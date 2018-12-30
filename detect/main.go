@@ -51,7 +51,7 @@ func d(detect detect.Detect) (int, error) {
 	_, env := os.LookupEnv("BP_DEBUG")
 
 	if dep && env {
-		return detect.Pass(buildplan.BuildPlan{debug.Dependency: buildplan.Dependency{}})
+		return detect.Pass(buildplan.BuildPlan{debug.Dependency: detect.BuildPlan[debug.Dependency]})
 	}
 
 	return detect.Fail(), nil
