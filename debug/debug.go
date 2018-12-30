@@ -19,6 +19,7 @@ package debug
 import (
 	"fmt"
 
+	"github.com/buildpack/libbuildpack/buildpack"
 	"github.com/cloudfoundry/libcfbuildpack/build"
 	"github.com/cloudfoundry/libcfbuildpack/layers"
 )
@@ -28,13 +29,13 @@ const Dependency = "debug"
 
 // Debug represents the debug configuration for a JVM application.
 type Debug struct {
-	layer   layers.Layer
-	version string
+	info  buildpack.Info
+	layer layers.Layer
 }
 
 // Contribute makes the contribution to launch.
 func (d Debug) Contribute() error {
-	return d.layer.Contribute(marker{d.version}, func(layer layers.Layer) error {
+	return d.layer.Contribute(marker{d.info}, func(layer layers.Layer) error {
 		return layer.WriteProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
@@ -53,7 +54,7 @@ export JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,addre
 
 // String makes Debug satisfy the Stringer interface.
 func (d Debug) String() string {
-	return fmt.Sprintf("Debug{ layer: %s, version: %s }", d.layer, d.version)
+	return fmt.Sprintf("Debug{ info: %s, layer: %s }", d.info, d.layer)
 }
 
 // NewDebug creates a new Debug instance. OK is true if build plan contains "debug" dependency, otherwise false.
@@ -63,11 +64,11 @@ func NewDebug(build build.Build) (Debug, bool) {
 		return Debug{}, false
 	}
 
-	return Debug{build.Layers.Layer(Dependency), build.Buildpack.Info.Version}, true
+	return Debug{build.Buildpack.Info, build.Layers.Layer(Dependency)}, true
 }
 
 type marker struct {
-	Version string `toml:"version"`
+	buildpack.Info
 }
 
 func (m marker) Identity() (string, string) {
