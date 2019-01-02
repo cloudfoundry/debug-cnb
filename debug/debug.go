@@ -18,6 +18,7 @@ package debug
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/buildpack/libbuildpack/buildpack"
 	"github.com/cloudfoundry/libcfbuildpack/build"
@@ -36,6 +37,10 @@ type Debug struct {
 // Contribute makes the contribution to launch.
 func (d Debug) Contribute() error {
 	return d.layer.Contribute(marker{d.info}, func(layer layers.Layer) error {
+		if err := os.RemoveAll(layer.Root); err != nil {
+			return err
+		}
+		
 		return layer.WriteProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
