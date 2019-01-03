@@ -40,7 +40,7 @@ func (d Debug) Contribute() error {
 		if err := os.RemoveAll(layer.Root); err != nil {
 			return err
 		}
-		
+
 		return layer.WriteProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
