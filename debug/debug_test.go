@@ -64,7 +64,7 @@ func TestDebug(t *testing.T) {
 			g.Expect(layer).To(test.HaveProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
-printf "Debugging enabled on port ${PORT}"
+printf "Debugging enabled on port ${PORT}\n"
 
 if [[ "${SUSPEND}" = "y" ]]; then
   printf ", suspended on start\n"
