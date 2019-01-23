@@ -44,7 +44,7 @@ func (d Debug) Contribute() error {
 		return layer.WriteProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
-printf "Debugging enabled on port ${PORT}\n"
+printf "Debugging enabled on port ${PORT}"
 
 if [[ "${SUSPEND}" = "y" ]]; then
   printf ", suspended on start\n"
