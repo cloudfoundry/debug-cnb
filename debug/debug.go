@@ -18,7 +18,6 @@ package debug
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/buildpack/libbuildpack/buildpack"
 	"github.com/cloudfoundry/libcfbuildpack/build"
@@ -31,16 +30,12 @@ const Dependency = "debug"
 // Debug represents the debug configuration for a JVM application.
 type Debug struct {
 	info  buildpack.Info
-	layer layers.Layer
+	layer layers.HelperLayer
 }
 
 // Contribute makes the contribution to launch.
 func (d Debug) Contribute() error {
-	return d.layer.Contribute(marker{d.info}, func(layer layers.Layer) error {
-		if err := os.RemoveAll(layer.Root); err != nil {
-			return err
-		}
-
+	return d.layer.Contribute(func(artifact string, layer layers.HelperLayer) error {
 		return layer.WriteProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
@@ -69,13 +64,5 @@ func NewDebug(build build.Build) (Debug, bool) {
 		return Debug{}, false
 	}
 
-	return Debug{build.Buildpack.Info, build.Layers.Layer(Dependency)}, true
-}
-
-type marker struct {
-	buildpack.Info
-}
-
-func (m marker) Identity() (string, string) {
-	return "Debug", m.Version
+	return Debug{build.Buildpack.Info, build.Layers.HelperLayer(Dependency, "Debug")}, true
 }
