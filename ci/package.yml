@@ -8,7 +8,7 @@ image_resource:
     tag: latest
 
 inputs:
-- name: debug-buildpack
+- name: debug-cnb
 
 outputs:
 - name: artifactory
@@ -17,4 +17,4 @@ caches:
 - path: go-module-cache
 
 run:
-  path: debug-buildpack/ci/package.sh
+  path: debug-cnb/ci/package.sh

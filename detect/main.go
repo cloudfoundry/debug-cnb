@@ -21,8 +21,8 @@ import (
 	"os"
 
 	"github.com/buildpack/libbuildpack/buildplan"
-	"github.com/cloudfoundry/debug-buildpack/debug"
-	"github.com/cloudfoundry/jvm-application-buildpack/jvmapplication"
+	"github.com/cloudfoundry/debug-cnb/debug"
+	"github.com/cloudfoundry/jvm-application-cnb/jvmapplication"
 	"github.com/cloudfoundry/libcfbuildpack/detect"
 )
 

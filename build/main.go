@@ -21,7 +21,7 @@ import (
 	"os"
 
 	"github.com/buildpack/libbuildpack/buildplan"
-	"github.com/cloudfoundry/debug-buildpack/debug"
+	"github.com/cloudfoundry/debug-cnb/debug"
 	"github.com/cloudfoundry/libcfbuildpack/build"
 )
 

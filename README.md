@@ -1,4 +1,4 @@
-# `debug-buildpack`
+# `debug-cnb`
 The Cloud Foundry Debug Buildpack is a Cloud Native Buildpack V3 that enables the debuging of JVM applications.
 
 ## Detection
