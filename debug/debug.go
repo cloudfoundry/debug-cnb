@@ -17,8 +17,6 @@
 package debug
 
 import (
-	"fmt"
-
 	"github.com/buildpack/libbuildpack/buildpack"
 	"github.com/cloudfoundry/libcfbuildpack/build"
 	"github.com/cloudfoundry/libcfbuildpack/layers"
@@ -50,11 +48,6 @@ fi
 export JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,address=${PORT},suspend=${SUSPEND}"
 `)
 	}, layers.Launch)
-}
-
-// String makes Debug satisfy the Stringer interface.
-func (d Debug) String() string {
-	return fmt.Sprintf("Debug{ info: %s, layer: %s }", d.info, d.layer)
 }
 
 // NewDebug creates a new Debug instance. OK is true if build plan contains "debug" dependency, otherwise false.
