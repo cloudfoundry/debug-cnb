@@ -31,9 +31,13 @@ func TestBuild(t *testing.T) {
 
 		g := gomega.NewWithT(t)
 
-		it("always passes", func() {
-			f := test.NewBuildFactory(t)
+		var f *test.BuildFactory
 
+		it.Before(func() {
+			f = test.NewBuildFactory(t)
+		})
+
+		it("always passes", func() {
 			g.Expect(b(f.Build)).To(gomega.Equal(build.SuccessStatusCode))
 		})
 	}, spec.Report(report.Terminal{}))
