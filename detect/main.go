@@ -33,11 +33,6 @@ func main() {
 		os.Exit(101)
 	}
 
-	if err := detect.BuildPlan.Init(); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Failed to initialize Build Plan: %s\n", err)
-		os.Exit(101)
-	}
-
 	if code, err := d(detect); err != nil {
 		detect.Logger.Info(err.Error())
 		os.Exit(code)
@@ -47,12 +42,18 @@ func main() {
 }
 
 func d(detect detect.Detect) (int, error) {
-	_, dep := detect.BuildPlan[jvmapplication.Dependency]
 	_, env := os.LookupEnv("BP_DEBUG")
-
-	if dep && env {
-		return detect.Pass(buildplan.BuildPlan{debug.Dependency: detect.BuildPlan[debug.Dependency]})
+	if !env {
+		return detect.Fail(), nil
 	}
 
-	return detect.Fail(), nil
+	return detect.Pass(buildplan.Plan{
+		Provides: []buildplan.Provided{
+			{Name: debug.Dependency},
+		},
+		Requires: []buildplan.Required{
+			{Name: debug.Dependency},
+			{Name: jvmapplication.Dependency},
+		},
+	})
 }
