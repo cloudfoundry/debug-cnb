@@ -52,8 +52,7 @@ export JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,addre
 
 // NewDebug creates a new Debug instance. OK is true if build plan contains "debug" dependency, otherwise false.
 func NewDebug(build build.Build) (Debug, bool) {
-	_, ok := build.BuildPlan[Dependency]
-	if !ok {
+	if !build.Plans.Has(Dependency) {
 		return Debug{}, false
 	}
 

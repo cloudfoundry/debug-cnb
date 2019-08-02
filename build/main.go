@@ -20,9 +20,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/cloudfoundry/debug-cnb/debug"
 	"github.com/cloudfoundry/libcfbuildpack/build"
+	"github.com/cloudfoundry/libcfbuildpack/buildpackplan"
 )
 
 func main() {
@@ -43,13 +43,16 @@ func main() {
 func b(build build.Build) (int, error) {
 	build.Logger.Title(build.Buildpack)
 
+	var ps []buildpackplan.Plan
+
 	if d, ok := debug.NewDebug(build); ok {
+
 		if err := d.Contribute(); err != nil {
 			return build.Failure(103), err
 		}
 
-		return build.Success(buildplan.BuildPlan{debug.Dependency: buildplan.Dependency{}})
+		ps = append(ps, buildpackplan.Plan{Name: debug.Dependency})
 	}
 
-	return build.Success(buildplan.BuildPlan{})
+	return build.Success(ps...)
 }

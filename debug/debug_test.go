@@ -19,8 +19,8 @@ package debug_test
 import (
 	"testing"
 
-	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/cloudfoundry/debug-cnb/debug"
+	"github.com/cloudfoundry/libcfbuildpack/buildpackplan"
 	"github.com/cloudfoundry/libcfbuildpack/test"
 	"github.com/onsi/gomega"
 	"github.com/sclevine/spec"
@@ -39,7 +39,7 @@ func TestDebug(t *testing.T) {
 		})
 
 		it("returns true if build plan does exist", func() {
-			f.AddBuildPlan(debug.Dependency, buildplan.Dependency{})
+			f.AddPlan(buildpackplan.Plan{Name: debug.Dependency})
 
 			_, ok := debug.NewDebug(f.Build)
 			g.Expect(ok).To(gomega.BeTrue())
@@ -51,7 +51,7 @@ func TestDebug(t *testing.T) {
 		})
 
 		it("contributes debug configuration", func() {
-			f.AddBuildPlan(debug.Dependency, buildplan.Dependency{})
+			f.AddPlan(buildpackplan.Plan{Name: debug.Dependency})
 
 			d, _ := debug.NewDebug(f.Build)
 			g.Expect(d.Contribute()).To(gomega.Succeed())
