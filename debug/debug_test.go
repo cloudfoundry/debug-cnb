@@ -61,7 +61,7 @@ func TestDebug(t *testing.T) {
 
 			layer := f.Build.Layers.Layer("debug")
 			g.Expect(layer).To(test.HaveLayerMetadata(false, false, true))
-			g.Expect(layer).To(test.HaveProfile("debug", `PORT=${BPL_DEBUG_PORT:=8080}
+			g.Expect(layer).To(test.HaveProfile("debug", `PORT=${BPL_DEBUG_PORT:=8000}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}
 
 printf "Debugging enabled on port ${PORT}"
