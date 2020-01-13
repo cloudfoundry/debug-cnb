@@ -13,7 +13,7 @@ The buildpack will do the following:
 ## Configuration 
 | Environment Variable | Description
 | -------------------- | -----------
-| `$BP_DEBU` | Whether to contribute debug support
+| `$BP_DEBUG` | Whether to contribute debug support
 | `$BPL_DEBUG_PORT` | What port the debug agent will listen on. Defaults to `8000`. 
 | `$BPL_DEBUG_SUSPEND` | Whether the JVM will suspend execution until a debugger has attached.  Defaults to `n`. 
 
