@@ -34,8 +34,8 @@ type Debug struct {
 // Contribute makes the contribution to launch.
 func (d Debug) Contribute() error {
 	return d.layer.Contribute(func(artifact string, layer layers.HelperLayer) error {
-		layer.Logger.LaunchConfiguration("Set BPL_DEBUG_PORT to configure", "8000")
-		layer.Logger.LaunchConfiguration("Set BPL_DEBUG_SUSPEND to configure", "n")
+		layer.Logger.LaunchConfiguration("Set $BPL_DEBUG_PORT to configure", "8000")
+		layer.Logger.LaunchConfiguration("Set $BPL_DEBUG_SUSPEND to configure", "n")
 
 		return layer.WriteProfile("debug", `PORT=${BPL_DEBUG_PORT:=8000}
 SUSPEND=${BPL_DEBUG_SUSPEND:=n}

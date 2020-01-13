@@ -4,7 +4,7 @@ The Cloud Foundry Debug Buildpack is a Cloud Native Buildpack V3 that enables th
 ## Behavior
 This buildpack will participate if all of the following conditions are met
 
-* `$BP_DEBUG` is set.
+* `$BP_DEBUG` is set
 
 The buildpack will do the following:
 
