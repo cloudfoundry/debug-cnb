@@ -1,19 +1,21 @@
 # `debug-cnb`
-The Cloud Foundry Debug Buildpack is a Cloud Native Buildpack V3 that enables the debuging of JVM applications.
+The Cloud Foundry Debug Buildpack is a Cloud Native Buildpack V3 that enables the debug-ing of JVM applications.
 
-## Detection
-The detection phase passes if
+## Behavior
+This buildpack will participate if all of the following conditions are met
 
-* `$BP_DEBUG` exists and build plan contains `jvm-application`
-  * Contributes `debug` to the build plan
+* `$BP_DEBUG` is set.
 
-## Build
-If the build plan contains
+The buildpack will do the following:
 
-* `debug`
-  * Contributes debug configuration to `$JAVA_OPTS`
-  * If `$BPL_DEBUG_PORT` is specified, configures the port the debug agent will listen on.  Defaults to `8000`.
-  * if `$BPL_DEBUG_SUSPEND` is specified, configures the JVM to suspend execution until a debugger has attached.  Note, you cannot ssh to a container until the container has decided the application is running.  Therefore when enabling this setting you must also push the application using the parameter `-u none` which disables container health checking.  Defaults to `n`.
+* Contribute debug configuration to `$JAVA_OPTS`
+
+## Configuration 
+| Environment Variable | Description
+| -------------------- | -----------
+| `$BP_DEBU` | Whether to contribute debug support
+| `$BPL_DEBUG_PORT` | What port the debug agent will listen on. Defaults to `8000`. 
+| `$BPL_DEBUG_SUSPEND` | Whether the JVM will suspend execution until a debugger has attached.  Defaults to `n`. 
 
 ## Creating SSH Tunnel
 After starting an application with debugging enabled, an SSH tunnel must be created to the container.  To create that SSH container, execute the following command:
