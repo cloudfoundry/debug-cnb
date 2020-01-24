@@ -10,12 +10,12 @@ The buildpack will do the following:
 
 * Contribute debug configuration to `$JAVA_OPTS`
 
-## Configuration 
+## Configuration
 | Environment Variable | Description
 | -------------------- | -----------
 | `$BP_DEBUG` | Whether to contribute debug support
-| `$BPL_DEBUG_PORT` | What port the debug agent will listen on. Defaults to `8000`. 
-| `$BPL_DEBUG_SUSPEND` | Whether the JVM will suspend execution until a debugger has attached.  Defaults to `n`. 
+| `$BPL_DEBUG_PORT` | What port the debug agent will listen on. Defaults to `8000`.
+| `$BPL_DEBUG_SUSPEND` | Whether the JVM will suspend execution until a debugger has attached.  Defaults to `n`.
 
 ## Creating SSH Tunnel
 After starting an application with debugging enabled, an SSH tunnel must be created to the container.  To create that SSH container, execute the following command:
