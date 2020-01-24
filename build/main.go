@@ -21,7 +21,7 @@ import (
 	"os"
 
 	"github.com/cloudfoundry/debug-cnb/debug"
-	"github.com/cloudfoundry/libcfbuildpack/build"
+	"github.com/cloudfoundry/libcfbuildpack/v2/build"
 )
 
 func main() {
