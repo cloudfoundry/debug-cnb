@@ -21,7 +21,6 @@ import (
 
 	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/cloudfoundry/debug-cnb/debug"
-	"github.com/cloudfoundry/jvm-application-cnb/jvmapplication"
 	"github.com/cloudfoundry/libcfbuildpack/detect"
 	"github.com/cloudfoundry/libcfbuildpack/test"
 	"github.com/onsi/gomega"
@@ -54,7 +53,7 @@ func TestDetect(t *testing.T) {
 				},
 				Requires: []buildplan.Required{
 					{Name: debug.Dependency},
-					{Name: jvmapplication.Dependency},
+					{Name: "jvm-application"},
 				},
 			}))
 		})
